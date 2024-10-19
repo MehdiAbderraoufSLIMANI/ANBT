@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+      {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
+
+
+ 
+    <!--FontAwesome CDN-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+        integrity="sha384-vSIIfh2YWi9wW0r9iZe7RJPrKwp6bG+s9QZMoITbCckVJqGCCRhc+ccxNcdpHuYu" crossorigin="anonymous">
+
+    <!--Chartjs CDN-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+    <!--Custome CSS-->
+    <link rel="stylesheet" href="">
+    
+    <title>Statistiques | ANBT Parc</title>
+</head>
+
+<body>
+
+  
+
+ <nav class="navbar navbar-expand-lg navbar-info bg-info p-3 mb-2 bg-dark" >
+    <div class="container" >
+        <a class="navbar-brand text-white">ANBT</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link text-white " href="/">Tableau de bord <span
+                            class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link text-white" ><strong>{% firstof request.user.get_full_name request.user.username %}</strong> Profile <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'admin:logout' %}">Déconnecter</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+ </nav>
+
+
+ 
+ <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text" for="inputGroupSelect01">Options</label>
+    </div>
+    <select class="custom-select" id="inputGroupSelect01">
+       {% if perms.material.view_ordinateur %}
+      <option value="ordinateur" >ordinateur</option>
+      {% endif %}
+
+      {% if perms.material.view_scanner %}
+      <option value="Scanner">Scanner</option>
+      {% endif %}
+      {% if perms.material.view_imprimante %}
+      <option value="Imprimante">Imprimante</option>
+      {% endif %}
+
+      {% if perms.material.view_ecran %}
+      <option value="Ecran">Ecran</option>
+      {% endif %}
+
+      {% if perms.material.view_serveur %}
+      <option value="Serveur">Serveur</option>
+      {% endif %}
+
+    </select>
+  </div>
+
+  <script> var val =localStorage.getItem("Keytest");
+  var selId = document.getElementById("inputGroupSelect01");
+ 
+  
+    if(val == null ){
+        console.log("impty");
+    }else{
+        
+        selId.value = val;
+        
+        
+        if(val == "Scanner"){
+            {% if perms.material.view_scanner %}
+            var hor_serv=  "{{scanner_hors_service}}";
+            var fonctioning = "{{scanner_foncting }}";
+            var traitement=  "{{scanner_traitement}}";
+            var count = "{{scanner_count }}";
+            {% endif %}
+
+
+
+        }else if (val == "ordinateur"){
+            {% if perms.material.view_ordinateur %}
+            var hor_serv=  "{{ordinateur_hors_service}}";
+            var fonctioning = "{{ordinateur_foncting }}";
+            var traitement=  "{{ordinateur_traitement}}";
+            var count = "{{ordinateur_count }}";
+            {% endif %}
+    
+        }else if (val == "Imprimante"){
+            {% if perms.material.view_imprimante %}
+            var hor_serv=  "{{imprimante_hors_service}}";
+            var fonctioning = "{{imprimante_foncting }}";
+            var traitement=  "{{imprimante_traitement}}";
+            var count = "{{imprimante_count }}";
+            {% endif %}
+
+
+
+        }else if (val == "Ecran"){
+            {% if perms.material.view_ecran %}
+            var hor_serv=  "{{ecran_hors_service}}";
+            var fonctioning = "{{ecran_foncting }}";
+            var traitement=  "{{ecran_traitement}}";
+            var count = "{{ecran_count }}";
+            {% endif %}
+
+
+        }else if (val == "Serveur"){
+            {% if perms.material.view_serveur %}
+            var hor_serv=  "{{serveur_hors_service}}";
+            var fonctioning = "{{serveur_foncting }}";
+            var traitement=  "{{serveur_traitement}}";
+            var count = "{{serveur_count }}";
+
+            {% endif %}
+
+
+        }
+
+        if(count == undefined){count = 0;   console.log("impty");}
+    }
+    
+    
+    function onchange(e) {
+        val = selId.value;
+        localStorage.setItem("Keytest", val);
+        window.location.reload();
+ 
+    }
+    document.getElementById('inputGroupSelect01').addEventListener('change', onchange);
+        </script>
+    
+ 
+            <div class="container ">
+                <div class="card-body  ">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-md-4">
+                            <div class="card my-card shadow text-center p-3 text-dark">
+                                <h4 id="title_counter">  </h4>
+                                <h3 id ="id01"></h3>
+                                <script>
+                                    const element = document.getElementById("id01");
+                        
+                                    element.innerHTML = count;
+                                    document.getElementById("title_counter").innerHTML =""+val;
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+    
+    </div>
+            <div class="row d-flex justify-content-center">
+                 <div class="col-md-6  text-center">L'etat de matériel</div></div>
+    
+                <div class="row d-flex justify-content-center">
+                    
+                        <div class="col-md-6 ">
+                            <div class="bg-white">
+                                <canvas id="myChart1" width="400" height="300"></canvas>
+                                <script>
+                                    var ctx = document.getElementById('myChart1').getContext('2d');
+                                    var myChart1 = new Chart(ctx, {
+                                        type: 'pie',
+                                        data: {
+                                            labels: ["Hors service", 'Fonctionne','Traitement' ],
+                                            datasets: [{
+                                                label: 'les material hors service',
+                                                data: [hor_serv, fonctioning, traitement ],
+                                                backgroundColor: [
+                                                    'rgba(231, 76, 60 )',
+                                                    'rgba(88, 214, 141)',
+                                                    'rgba(241, 196, 15)',
+                                                     
+                                                ],
+                                                borderColor: [
+                                                    'rgba(231, 76, 60 )',
+                                                    'rgba(88, 214, 141)',
+                                                    'rgba(241, 196, 15)',
+                                                    
+                                                ],
+                                                borderWidth: 1
+                                            }]
+                                        },
+                                        options: {
+                                            scales: {
+                                                yAxes: [{
+                                                    ticks: {
+                                                        beginAtZero: true
+                                                    }
+                                                }]
+                                            }
+                                        }
+                                    });
+                                </script>
+                            
+                            </div>
+                        </div>
+                
+                    </div>
+            
+
+                
+                </div>
+            </div>
+   
+<!--
+<div class="row d-flex justify-content-center">      
+    <div class="col-md-6 ">
+        <div class="container ">
+            <div class="card-body  ">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card my-card shadow text-center p-3 text-dark">
+                            <h4 id="title_counter">  </h4>
+                            <h3 id ="id01"></h3>
+                            <script>
+                                const element = document.getElementById("id01");
+                    
+                                element.innerHTML = count;
+                                document.getElementById("title_counter").innerHTML =""+val;
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+    </div>    
+</div>
+ -->       
+
+
+    
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    </body>
+
+</html>
